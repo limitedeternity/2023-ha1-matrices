@@ -1,0 +1,23 @@
+name: tests
+on: push
+jobs:
+  tests:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - run: make smoke
+  clang-tidy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          echo "ОПЦИОНАЛЬНО: clang-tidy проверяет исходный код на наличие типичных ошибок или отклонений от принятого стиля кодирования."
+          clang-tidy \
+            '--checks=readability-inconsistent-declaration-parameter-name,modernize-deprecated-headers,modernize-use-noexcept,modernize-use-override,cppcoreguidelines-pro-type-cstyle-cast,google-readability-casting,readability-delete-null-pointer,readability-redundant-control-flow,fuchsia-restrict-system-includes' \
+            '--config={CheckOptions: [{key: fuchsia-restrict-system-includes.Includes, value: "*,-bits/*"}]}' \
+            --quiet \
+            '--warnings-as-errors=*' \
+            main.cpp matrices.cpp matrices.hpp \
+            -- \
+            -std=c++20 \
+            -Wall -Wextra
