@@ -1,0 +1,15 @@
+Checks: >
+  readability-inconsistent-declaration-parameter-name,
+  modernize-deprecated-headers,
+  modernize-use-noexcept,
+  modernize-use-override,
+  cppcoreguidelines-pro-type-cstyle-cast,
+  google-readability-casting,
+  readability-delete-null-pointer,
+  readability-redundant-control-flow,
+  fuchsia-restrict-system-includes
+
+WarningsAsErrors: '*'
+
+CheckOptions:
+  - { key: fuchsia-restrict-system-includes.Includes, value: '*,-bits/*' }
