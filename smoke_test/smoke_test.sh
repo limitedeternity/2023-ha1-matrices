@@ -1,4 +1,5 @@
-#!/bin/sh -eu
+#!/usr/bin/env sh
+set -eu
 
 if [ "$#" -lt 1 ]; then
     echo "Usage:"
