@@ -76,9 +76,9 @@ std::stringstream matrix::display() const
     ss << dim_row_ << " " << dim_col_;
     ss << std::endl;
 
-    for (size_t i = 0; i < dim_row_ * dim_col_; ++i)
+    for (size_t i = 1; i < dim_row_ * dim_col_ + 1; ++i)
     {
-        ss << mat_data_[i];
+        ss << mat_data_[i - 1];
 
         if (i % dim_col_ != 0)
         {
