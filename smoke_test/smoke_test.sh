@@ -10,9 +10,10 @@ fi
 EXECUTABLE="$1"
 REAL_EXEC="$EXECUTABLE"
 
-VALGRIND_OPTS="--leak-check=yes -q --leak-resolution=high --main-stacksize=64000000"
-# To use Valgrind uncomment next line:
-#REAL_EXEC="valgrind $VALGRIND_OPTS $EXECUTABLE"
+if [ -x "$(command -v valgrind)" ]; then
+    VALGRIND_OPTS="--leak-check=yes -q --leak-resolution=high --main-stacksize=64000000"
+    REAL_EXEC="valgrind $VALGRIND_OPTS $EXECUTABLE"
+fi
 
 run()
 {
