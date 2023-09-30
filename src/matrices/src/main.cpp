@@ -59,6 +59,7 @@ auto process_arguments(coro::generator<std::string_view> gen_args)
 }
 
 int main(int argc, char *argv[])
+try
 {
     matrix result;
 
@@ -90,4 +91,10 @@ int main(int argc, char *argv[])
     }
 
     std::cout << result.display().rdbuf();
+    return EXIT_SUCCESS;
+}
+catch (const std::exception& e)
+{
+    std::cerr << e.what() << std::endl;
+    return EXIT_FAILURE;
 }
