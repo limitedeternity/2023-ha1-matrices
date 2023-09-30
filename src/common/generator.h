@@ -27,13 +27,21 @@ namespace coro
             std::suspend_always initial_suspend() noexcept { return {}; }
             std::suspend_always final_suspend() noexcept { return {}; }
 
-            void return_void() {}
+            void return_void() { current_value = {}; }
             void unhandled_exception() { throw; }
 
             template <std::convertible_to<T> From>
             std::suspend_always yield_value(From&& from) noexcept
             {
-                current_value = T(std::forward<From>(from));
+                if constexpr (std::same_as<T, From>)
+                {
+                    current_value = std::forward<From>(from);
+                }
+                else
+                {
+                    current_value = T(std::forward<From>(from));
+                }
+
                 return {};
             }
 
@@ -103,7 +111,12 @@ namespace coro
 
             reference operator*() const
             {
-                return *coroutine_.promise().current_value;
+                if (auto& current_value = coroutine_.promise().current_value)
+                {
+                    return *current_value;
+                }
+
+                throw std::bad_optional_access();
             }
 
             bool operator==(std::default_sentinel_t) const noexcept
