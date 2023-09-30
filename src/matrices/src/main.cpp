@@ -21,13 +21,10 @@ enum class operation_class
     init, add, mult
 };
 
-auto process_arguments(coro::generator<std::string_view> gen_args)
+coro::generator<std::pair<operation_class, matrix>> process_arguments(coro::generator<std::string_view> gen_args)
 {
     auto iterator = gen_args.begin();
-
-    std::vector<std::pair<operation_class, std::string_view>> result{
-        { operation_class::init, *++iterator }
-    };
+    co_yield std::pair(operation_class::init, matrix(*++iterator));
 
     for (++iterator; iterator != gen_args.end(); ++iterator)
     {
@@ -35,13 +32,13 @@ auto process_arguments(coro::generator<std::string_view> gen_args)
         {
         case hash::fnv1a_32("--add"):
             {
-                result.emplace_back(operation_class::add, *++iterator);
+                co_yield std::pair(operation_class::add, matrix(*++iterator));
                 continue;
             }
 
         case hash::fnv1a_32("--mult"):
             {
-                result.emplace_back(operation_class::mult, *++iterator);
+                co_yield std::pair(operation_class::mult, matrix(*++iterator));
                 continue;
             }
 
@@ -54,8 +51,6 @@ auto process_arguments(coro::generator<std::string_view> gen_args)
             }
         }
     }
-
-    return result;
 }
 
 int main(int argc, char *argv[])
@@ -63,25 +58,25 @@ try
 {
     matrix result;
 
-    for (const auto& [op_class, mat_file] : process_arguments(modernize_argv(argc, argv)))
+    for (auto& [op_class, matrix] : process_arguments(modernize_argv(argc, argv)))
     {
         switch (op_class)
         {
         case operation_class::init:
             {
-                result = matrix(mat_file);
+                result = std::move(matrix);
                 continue;
             }
 
         case operation_class::add:
             {
-                result += matrix(mat_file);
+                result += matrix;
                 continue;
             }
 
         case operation_class::mult:
             {
-                result *= matrix(mat_file);
+                result *= matrix;
                 continue;
             }
 
