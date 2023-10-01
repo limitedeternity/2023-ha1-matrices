@@ -3,11 +3,12 @@
 
 #include <filesystem>
 #include <sstream>
-#include <vector>
+
+#include "vector.h"
 
 class matrix
 {
-    std::vector<double> mat_data_;
+    simpl::kektor<double> mat_data_;
     size_t dim_row_ = 0;
     size_t dim_col_ = 0;
 
