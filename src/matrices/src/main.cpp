@@ -88,6 +88,11 @@ try
     std::cout << result.display().rdbuf();
     return EXIT_SUCCESS;
 }
+catch (const std::bad_optional_access&)
+{
+    std::cerr << "Too few arguments" << std::endl;
+    return EXIT_FAILURE;
+}
 catch (const std::exception& e)
 {
     std::cerr << e.what() << std::endl;
