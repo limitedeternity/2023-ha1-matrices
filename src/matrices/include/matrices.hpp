@@ -16,7 +16,7 @@ public:
     explicit matrix(const std::filesystem::path& file);
 
     matrix(const size_t row, const size_t col) :
-        mat_data_(row * col, 0),
+        mat_data_(row * col),
         dim_row_{row},
         dim_col_{col}
     {}

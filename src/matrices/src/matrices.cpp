@@ -11,7 +11,7 @@ matrix::matrix(const std::filesystem::path& file)
 
     in >> dim_row_;
     in >> dim_col_;
-    mat_data_.resize(dim_row_ * dim_col_, 0);
+    mat_data_.resize(dim_row_ * dim_col_);
 
     for (double& val : mat_data_)
     {
