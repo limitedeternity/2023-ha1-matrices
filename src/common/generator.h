@@ -54,10 +54,7 @@ namespace coro
 
         ~generator()
         {
-            if (coroutine_)
-            {
-                coroutine_.destroy();
-            }
+            destroy_coro();
         }
 
         generator(const generator&) = delete;
@@ -73,13 +70,8 @@ namespace coro
         {
             if (this != std::addressof(other))
             {
-                if (coroutine_)
-                {
-                    coroutine_.destroy();
-                }
-
-                coroutine_ = other.coroutine_;
-                other.coroutine_ = {};
+                destroy_coro();
+                std::swap(coroutine_, other.coroutine_);
             }
 
             return *this;
@@ -138,6 +130,15 @@ namespace coro
         [[nodiscard]] std::default_sentinel_t end() const { return {}; }
 
     private:
+        void destroy_coro()
+        {
+            if (coroutine_)
+            {
+                coroutine_.destroy();
+                coroutine_ = {};
+            }
+        }
+
         handle_type coroutine_;
     };
 }

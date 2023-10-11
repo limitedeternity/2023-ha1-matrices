@@ -5,6 +5,7 @@
 namespace simpl
 {
     template <typename T, typename Alloc = std::allocator<T>>
+    requires std::copyable<T> || std::movable<T>
     class kektor
     {
         using traits = typename std::allocator_traits<Alloc>::template rebind_traits<T>;
@@ -119,7 +120,7 @@ namespace simpl
                 reserve(capacity_ == 0 ? 1 : capacity_ << 1);
             }
 
-            data_[size_] = std::forward<U>(value);
+            std::construct_at(std::addressof(data_[size_]), std::forward<U>(value));
             ++size_;
         }
 
@@ -130,7 +131,7 @@ namespace simpl
                 throw std::out_of_range("pop_back(): size == 0");
             }
 
-            std::destroy_at(&data_[size_ - 1]);
+            std::destroy_at(std::addressof(data_[size_ - 1]));
             --size_;
         }
 
